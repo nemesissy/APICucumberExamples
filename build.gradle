@@ -1,0 +1,47 @@
+plugins {
+    id 'java'
+    //id 'java-library'
+    //id "com.commercehub.cucumber-jvm" version "0.11"
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+    testImplementation group: 'io.rest-assured', name: 'rest-assured', version: '3.0.7'
+    testImplementation group: 'io.rest-assured', name: 'json-schema-validator', version: '3.0.7'
+    testImplementation 'io.cucumber:cucumber-java:7.0.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+}
+
+
+configurations {
+    cucumberRuntime {
+        extendsFrom testImplementation
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+task cucumberCli() {
+    dependsOn assemble, testClasses
+    doLast {
+        javaexec {
+            main = "io.cucumber.core.cli.Main"
+            classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
+            args = [
+                    '--plugin', 'pretty',
+                    '--plugin', 'html:target/cucumber-report.html',
+                    '--glue', 'com.examples.cucumber',
+                    'src/test/resources/features']
+        }
+    }
+}
