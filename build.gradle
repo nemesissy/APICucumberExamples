@@ -31,7 +31,7 @@ test {
     useJUnitPlatform()
 }
 
-task cucumberCli() {
+task cucumberSmokes() {
     dependsOn assemble, testClasses
     doLast {
         javaexec {
@@ -40,7 +40,23 @@ task cucumberCli() {
             args = [
                     '--plugin', 'pretty',
                     '--plugin', 'html:target/cucumber-report.html',
-                    '--glue', 'com.examples.cucumber',
+                    '--glue', 'com.nemesissy.cucumber',
+                    '--tags', '@Smoke',
+                    'src/test/resources/features']
+        }
+    }
+}
+
+task cucumberAll() {
+    dependsOn assemble, testClasses
+    doLast {
+        javaexec {
+            main = "io.cucumber.core.cli.Main"
+            classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
+            args = [
+                    '--plugin', 'pretty',
+                    '--plugin', 'html:target/cucumber-report.html',
+                    '--glue', 'com.nemesissy.cucumber',
                     'src/test/resources/features']
         }
     }

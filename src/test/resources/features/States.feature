@@ -1,5 +1,6 @@
 Feature: States
 
+  @Smoke
   Scenario: Count States
     Given The API is available
     When I get the states
